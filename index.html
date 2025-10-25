@@ -14,7 +14,6 @@
       --hover-shadow: rgba(255, 102, 0, 0.6);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       background: radial-gradient(ellipse at top, #0a0a0a 0%, #000 70%, #0a0a0a 100%);
       color: var(--text);
@@ -26,20 +25,8 @@
       padding: 40px 20px;
       min-height: 100vh;
       overflow-x: hidden;
-      position: relative;
       animation: fadeIn 1s ease-in-out;
     }
-
-    canvas#particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      background: transparent;
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -49,7 +36,6 @@
       text-align: center;
       margin-bottom: 50px;
       position: relative;
-      z-index: 1;
     }
     .logo-container img {
       width: 180px;
@@ -84,7 +70,6 @@
       width: 100%;
       max-width: 450px;
       padding: 0 10px;
-      z-index: 1;
     }
     .link {
       display: flex;
@@ -143,7 +128,6 @@
       text-align: center;
       font-weight: 300;
       letter-spacing: 1px;
-      z-index: 1;
     }
 
     @media (max-width: 600px) {
@@ -154,8 +138,6 @@
   </style>
 </head>
 <body>
-  <!-- Particle Background -->
-  <canvas id="particles"></canvas>
 
   <div class="logo-container">
     <img src="images/team-logo.png" alt="Team Robotics SKNCOE Logo">
@@ -205,106 +187,7 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // ROBOTICS PARTICLE BACKGROUND
-    const canvas = document.getElementById("particles");
-    const ctx = canvas.getContext("2d");
-    let particlesArray;
-
-    const particleCount = 80;
-    const maxDistance = 120;
-    const particleColor = "rgba(255, 102, 0, 0.8)";
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const mouse = { x: null, y: null, radius: 150 };
-    window.addEventListener("mousemove", function(e) {
-      mouse.x = e.x;
-      mouse.y = e.y;
-    });
-
-    class Particle {
-      constructor(x, y, dx, dy, size) {
-        this.x = x;
-        this.y = y;
-        this.dx = dx;
-        this.dy = dy;
-        this.size = size;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = particleColor;
-        ctx.fill();
-      }
-      update() {
-        this.x += this.dx;
-        this.y += this.dy;
-
-        if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
-
-        // Mouse interaction
-        const dx = mouse.x - this.x;
-        const dy = mouse.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < mouse.radius) {
-          this.x -= dx / 10;
-          this.y -= dy / 10;
-        }
-        this.draw();
-      }
-    }
-
-    function initParticles() {
-      particlesArray = [];
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 2 + 1;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const dx = (Math.random() - 0.5) * 1.2;
-        const dy = (Math.random() - 0.5) * 1.2;
-        particlesArray.push(new Particle(x, y, dx, dy, size));
-      }
-    }
-
-    function connectParticles() {
-      for (let a = 0; a < particlesArray.length; a++) {
-        for (let b = a; b < particlesArray.length; b++) {
-          const dx = particlesArray[a].x - particlesArray[b].x;
-          const dy = particlesArray[a].y - particlesArray[b].y;
-          const distance = dx * dx + dy * dy;
-          if (distance < maxDistance * maxDistance) {
-            const opacity = 1 - distance / (maxDistance * maxDistance);
-            ctx.strokeStyle = `rgba(255,102,0,${opacity})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let particle of particlesArray) {
-        particle.update();
-      }
-      connectParticles();
-      requestAnimationFrame(animateParticles);
-    }
-
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initParticles();
-    });
-
-    initParticles();
-    animateParticles();
   </script>
+
 </body>
 </html>
